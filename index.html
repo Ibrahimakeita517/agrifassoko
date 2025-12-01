@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AgriFasoko — Prototype</title>
+  <style>
+    /* ====== Reset & Base ====== */
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
+    html,body,#app{height:100%}
+    body{background:#f6f8fb;color:#0f172a;line-height:1.4}
+
+    /* ====== App Shell ====== */
+    .app{max-width:900px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+    header{background:linear-gradient(90deg,#0ea5a4, #38bdf8);color:white;padding:14px 16px;border-bottom-left-radius:18px;border-bottom-right-radius:18px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:48px;height:48px;border-radius:10px;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-weight:700}
+    .brand h1{font-size:18px}
+    .brand p{font-size:12px;opacity:0.95}
+
+    main{padding:12px;flex:1;display:flex;flex-direction:column;gap:12px}
+
+    /* ====== Home grid ====== */
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .card{background:white;padding:12px;border-radius:12px;box-shadow:0 6px 18px rgba(12,17,43,0.06);display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;border:1px solid rgba(15,23,42,0.04)}
+    .card button{background:transparent;border:0;font-weight:600;color:#0f172a}
+    .card .icon{width:44px;height:44px;border-radius:8px;background:#eef2ff;display:flex;align-items:center;justify-content:center;font-size:18px}
+
+    /* ====== Views ====== */
+    .view{display:none;flex-direction:column;gap:12px}
+    .view.active{display:flex}
+
+    .list{display:flex;flex-direction:column;gap:8px}
+    .item{background:white;padding:10px;border-radius:10px;border:1px solid rgba(15,23,42,0.04);display:flex;justify-content:space-between;align-items:center}
+
+    /* ====== Forms ====== */
+    label{font-size:13px;margin-bottom:6px;display:block}
+    input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef6;background:#fff}
+    .row{display:flex;gap:8px}
+    .row .col{flex:1}
+    .btn{display:inline-block;padding:10px 12px;border-radius:10px;border:0;background:#0ea5a4;color:white;font-weight:700}
+    .btn.ghost{background:transparent;color:#0f172a;border:1px solid rgba(15,23,42,0.06)}
+
+    /* ====== Bottom nav ====== */
+    nav.bottom{position:fixed;left:0;right:0;bottom:12px;display:flex;justify-content:center}
+    .bn{background:white;padding:8px;border-radius:14px;box-shadow:0 6px 20px rgba(2,6,23,0.08);display:flex;gap:6px}
+    .bn button{background:transparent;border:0;padding:8px 12px;border-radius:10px;font-weight:600}
+    .bn button.active{background:linear-gradient(90deg,#34d399,#10b981);color:white}
+
+    /* ====== Responsive tweaks ====== */
+    @media (max-width:640px){.grid{grid-template-columns:repeat(3,1fr)}header{padding:12px}.brand h1{font-size:16px}}
+
+    /* ====== Small helpers ====== */
+    .muted{color:#475569;font-size:13px}
+    .badge{background:#eef2ff;padding:6px 8px;border-radius:999px;font-size:12px}
+    .search{display:flex;gap:8px}
+    .search input{flex:1}
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <header>
+      <div class="brand">
+        <div class="logo">AF</div>
+        <div>
+          <h1>AgriFasoko</h1>
+          <p>Application d’assistance pour cultivateurs et éleveurs — Mali</p>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- HOME -->
+      <section id="home" class="view active">
+        <div class="grid">
+          <div class="card"><div class="icon">🐔</div><button data-nav="elevage">Élevage</button><div class="muted">Gérer animaux</div></div>
+          <div class="card"><div class="icon">🌾</div><button data-nav="culture">Culture</button><div class="muted">Gérer champs</div></div>
+          <div class="card"><div class="icon">🛒</div><button data-nav="marche">Marché</button><div class="muted">Acheter / Vendre</div></div>
+
+          <div class="card"><div class="icon">📚</div><button data-nav="conseils">Conseils</button><div class="muted">Articles & vidéos</div></div>
+          <div class="card"><div class="icon">💉</div><button data-nav="veto">Vétérinaire</button><div class="muted">Contact & consult</div></div>
+          <div class="card"><div class="icon">👤</div><button data-nav="profil">Profil</button><div class="muted">Vos données</div></div>
+        </div>
+
+        <section style="margin-top:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="muted">Alertes météo</div>
+            <div class="badge" id="weatherBadge">—</div>
+          </div>
+          <div style="margin-top:8px;background:white;padding:12px;border-radius:10px;border:1px solid rgba(15,23,42,0.04)">
+            <div id="weatherText">Chargement des alertes...</div>
+          </div>
+        </section>
+      </section>
+
+      <section id="elevage" class="view">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h2>Élevage</h2>
+          <div><button class="btn ghost" id="backFromElevage">Retour</button></div>
+        </div>
+      
+        <div class="row">
+          <div class="col">
+            <h3>Rappels</h3>
+            <label>Rappel de vaccination</label>
+            <input id="vaccinationReminder" type="date" />
+            <label>Rappel d'achat d'aliment</label>
+            <input id="foodReminder" type="date" />
+            <label>Rappel de nettoyage</label>
+            <input id="cleaningReminder" type="date" />
+            <div style="margin-top:8px"><button class="btn" id="saveReminders">Enregistrer les rappels</button></div>
+          </div>
+      
+          <div class="col">
+            <h3>Alerte de nourriture</h3>
+            <label>Nombre de repas par jour</label>
+            <select id="feedingFrequency">
+              <option value="1">1 fois</option>
+              <option value="2">2 fois</option>
+              <option value="3">3 fois</option>
+              <option value="4">4 fois</option>
+            </select>
+            <label>Heures des repas</label>
+            <input id="feedingTimes" placeholder="Ex: 08:00, 12:00, 18:00" />
+            <div style="margin-top:8px"><button class="btn" id="saveFeedingAlerts">Enregistrer les alertes</button></div>
+          </div>
+        </div>
+      
+        <h3 style="margin-top:12px">Mes rappels</h3>
+        <div id="remindersList" class="list"></div>
+      </section>
+      
+      <script>
+        // ====== ÉLEVAGE LOGIC ======
+        function renderReminders() {
+          const reminders = storage.get('reminders', []);
+          const list = document.getElementById('remindersList');
+          list.innerHTML = '';
+          if (reminders.length === 0) {
+            list.innerHTML = '<div class="muted">Aucun rappel enregistré.</div>';
+            return;
+          }
+          reminders.forEach((r, idx) => {
+            const it = document.createElement('div');
+            it.className = 'item';
+            it.innerHTML = `<div><strong>${r.type}</strong><div class="muted">${r.date || r.times}</div></div>
+                            <div><button class="btn" data-idx="${idx}" data-action="removeReminder">Supprimer</button></div>`;
+            list.appendChild(it);
+          });
+        }
+      
+        document.getElementById('saveReminders').addEventListener('click', () => {
+          const vaccinationDate = document.getElementById('vaccinationReminder').value;
+          const foodDate = document.getElementById('foodReminder').value;
+          const cleaningDate = document.getElementById('cleaningReminder').value;
+      
+          const reminders = storage.get('reminders', []);
+          if (vaccinationDate) reminders.push({ type: 'Vaccination', date: vaccinationDate });
+          if (foodDate) reminders.push({ type: 'Achat d\'aliment', date: foodDate });
+          if (cleaningDate) reminders.push({ type: 'Nettoyage', date: cleaningDate });
+      
+          storage.set('reminders', reminders);
+          renderReminders();
+          alert('Rappels enregistrés');
+        });
+      
+        document.getElementById('saveFeedingAlerts').addEventListener('click', () => {
+          const frequency = document.getElementById('feedingFrequency').value;
+          const times = document.getElementById('feedingTimes').value;
+      
+          if (!times) {
+            alert('Veuillez entrer les heures des repas');
+            return;
+          }
+      
+          const reminders = storage.get('reminders', []);
+          reminders.push({ type: 'Nourriture', times: `${frequency} fois par jour à ${times}` });
+          storage.set('reminders', reminders);
+          renderReminders();
+          alert('Alertes de nourriture enregistrées');
+        });
+      
+        document.getElementById('remindersList').addEventListener('click', (e) => {
+          const btn = e.target.closest('button');
+          if (!btn) return;
+          const idx = Number(btn.dataset.idx);
+          const reminders = storage.get('reminders', []);
+          reminders.splice(idx, 1);
+          storage.set('reminders', reminders);
+          renderReminders();
+        });
+      
+        // Initial render
+        renderReminders();
+      </script>
+
+      <!-- CULTURE -->
+      <section id="culture" class="view">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h2>Culture</h2>
+          <div><button class="btn ghost" id="backFromCulture">Retour</button></div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <h3>1) Capteur du sol</h3>
+            <div style="display:flex;gap:8px;align-items:center">
+              <div style="flex:1">
+                <label>Humidité actuelle</label>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div id="soilHumidity" class="badge">—</div>
+                  <button class="btn ghost" id="readSoil">Lire capteur</button>
+                </div>
+              </div>
+            </div>
+            <label>Seuil d'alerte (%)</label>
+            <input id="soilThreshold" type="number" placeholder="Ex: 30" />
+            <div style="margin-top:8px;display:flex;gap:8px"><button class="btn" id="setSoilThreshold">Enregistrer seuil</button><button class="btn ghost" id="clearSoilHistory">Effacer historique</button></div>
+            <h4 style="margin-top:8px">Historique humidité</h4>
+            <div id="soilHistory" class="list" style="max-height:160px;overflow:auto"></div>
+
+            <hr style="margin:12px 0;border:none;border-top:1px solid rgba(15,23,42,0.04)" />
+
+            <h3>2) Alerte climatique</h3>
+            <div style="display:flex;gap:8px;align-items:center">
+              <div style="flex:1">
+                <label>Température</label>
+                <div id="climateTemp" class="muted">— °C</div>
+                <label style="margin-top:6px">Risque pluie</label>
+                <div id="climateRain" class="muted">—</div>
+                <div style="margin-top:6px"><strong>Conseil :</strong> <div id="climateAdvice" class="muted">—</div></div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <button class="btn" id="refreshClimate">Actualiser</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
+            <h3>3) Suivi (normal)</h3>
+            <label>Sélectionner champ</label>
+            <select id="selectField"></select>
+            <label>Action (semis/arrosage/traitement/récolte)</label>
+            <input id="fieldAction" placeholder="Ex: Arrosage fait" />
+            <div style="margin-top:8px"><button class="btn" id="saveFieldAction">Enregistrer</button></div>
+
+            <hr style="margin:12px 0;border:none;border-top:1px solid rgba(15,23,42,0.04)" />
+
+            <h3>Ajouter un champ</h3>
+            <label>Nom du champ</label>
+            <input id="fieldName" placeholder="Ex: Champ Sud" />
+            <label>Produit</label>
+            <select id="cropType"><option>Gombo</option><option>Riz</option><option>Maïs</option><option>Tomate</option><option>Mil</option></select>
+            <label>Superficie (m²)</label>
+            <input id="fieldArea" type="number" />
+            <div style="margin-top:8px"><button class="btn" id="addField">Ajouter</button></div>
+          </div>
+        </div>
+
+        <h3 style="margin-top:12px">4) Mes champs</h3>
+        <div id="fieldsList" class="list"></div>
+      </section>
+
+      <!-- MARCHE -->
+      <section id="marche" class="view">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h2>Marché Agricole</h2>
+          <div><button class="btn ghost" id="backFromMarche">Retour</button></div>
+        </div>
+
+        <div class="search">
+          <input id="marketSearch" placeholder="Rechercher produit ou vendeur" />
+          <button class="btn" id="newOfferBtn">Vendre</button>
+        </div>
+
+        <div style="margin-top:8px">
+          <h3>Offres</h3>
+          <div id="marketList" class="list"></div>
+        </div>
+      </section>
+
+      <!-- CONSEILS -->
+      <section id="conseils" class="view">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h2>Conseils & Formation</h2>
+          <div><button class="btn ghost" id="backFromConseils">Retour</button></div>
+        </div>
+        <div class="list" id="articlesList"></div>
+      </section>
+
+      <!-- VETO -->
+      <section id="veto" class="view">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h2>Assistance Vétérinaire</h2>
+          <div><button class="btn ghost" id="backFromVeto">Retour</button></div>
+        </div>
+        <div>
+          <h3>Vétérinaires disponibles</h3>
+          <div id="vetsList" class="list"></div>
+        </div>
+        <div style="margin-top:8px">
+          <h3>Demander une consultation</h3>
+          <label>Vétérinaire</label>
+          <select id="selectVet"></select>
+          <label>Sujet / Symptômes</label>
+          <textarea id="vetMessage" rows="3"></textarea>
+          <div style="margin-top:8px"><button class="btn" id="sendVetMsg">Envoyer</button></div>
+        </div>
+      </section>
+
+      <!-- PROFIL -->
+      <section id="profil" class="view">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h2>Profil</h2>
+          <div><button class="btn ghost" id="backFromProfil">Retour</button></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-direction:column">
+          <label>Nom</label>
+          <input id="profileName" placeholder="Votre nom" />
+          <label>Localisation (région / village)</label>
+          <input id="profileLocation" placeholder="Ex: Koulikoro" />
+          <label>Téléphone</label>
+          <input id="profilePhone" placeholder="+223 6x xx xx xx" />
+          <div style="margin-top:8px"><button class="btn" id="saveProfile">Sauvegarder</button></div>
+        </div>
+      </section>
+
+    </main>
+
+    <nav class="botton">
+      <div class="bn">
+        <button data-nav="marche">Marché</button>
+        <button data-nav="elevage">Élevage</button>
+        <button data-nav="conseils">Conseils</button>
+        <button data-nav="culture">Culture</button>
+        <button data-nav="profil">Profil</button>
+      </div>
+    </nav>
+  </div>
+
+  <script>
+    // ====== Simple SPA navigation ======
+    const views = document.querySelectorAll('.view');
+    function showView(id){
+      views.forEach(v=>v.classList.remove('active'));
+      const el = document.getElementById(id);
+      if(el) el.classList.add('active');
+      // update bottom nav active
+      document.querySelectorAll('.bn button').forEach(b=>b.classList.toggle('active', b.dataset.nav===id));
+      }
+
+    // Home buttons
+    document.querySelectorAll('[data-nav]').forEach(btn=>{
+      btn.addEventListener('click', ()=> showView(btn.dataset.nav));
+    });
+
+    // Back buttons
+    ['backFromElevage','backFromCulture','backFromMarche','backFromConseils','backFromVeto','backFromProfil'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el) el.addEventListener('click', ()=> showView('home'));
+    });
+
+    // ====== LocalStorage helpers ======
+    const storage = {
+      get(key, def){ try{ return JSON.parse(localStorage.getItem(key)) ?? def }catch(e){return def} },
+      set(key,val){ localStorage.setItem(key, JSON.stringify(val)) }
+    }
+
+    // ====== Weather (simulated) ======
+    function updateWeather(){
+      // For prototype we simulate an alert based on random conditions
+      const conditions = [
+        {text:'Aucune alerte — temps stable', badge:'OK'},
+        {text:'Risque de forte chaleur — protéger le bétail', badge:'CHALEUR'},
+        {text:'Pluie importante prévue — retarder les semis', badge:'PLUIE'},
+        {text:'Vent fort — attacher les structures légères', badge:'VENT'}
+      ];
+      const pick = conditions[Math.floor(Math.random()*conditions.length)];
+      document.getElementById('weatherText').textContent = pick.text;
+      document.getElementById('weatherBadge').textContent = pick.badge;
+    }
+    updateWeather();
+
+    // ====== ELEVAGE LOGIC ======
+    function renderAnimals(){
+      const animals = storage.get('animals',[]);
+      const list = document.getElementById('animalsList'); list.innerHTML='';
+      const select = document.getElementById('selectAnimal'); select.innerHTML='';
+      if(animals.length===0){ list.innerHTML='<div class="muted">Aucun animal ajouté.</div>'; return }
+      animals.forEach((a,idx)=>{
+        const it = document.createElement('div'); it.className='item';
+        it.innerHTML = `<div><strong>${a.name}</strong> <div class="muted">${a.type} — ${a.age} mois</div></div>
+                        <div style="display:flex;gap:6px"><button class='btn ghost' data-idx='${idx}' data-action='view'>Détails</button><button class='btn' data-idx='${idx}' data-action='remove'>Suppr</button></div>`;
+        list.appendChild(it);
+        const opt = document.createElement('option'); opt.value=idx; opt.text = `${a.name} (${a.type})`; select.appendChild(opt);
+      })
+    }
+
+    document.getElementById('addAnimal').addEventListener('click', ()=>{
+      const type = document.getElementById('animalType').value;
+      const name = document.getElementById('animalName').value.trim();
+      const age = Number(document.getElementById('animalAge').value) || 0;
+      if(!name){alert('Donnez un nom ou identifiant');return}
+      const animals = storage.get('animals',[]);
+      animals.push({type,name,age,notes:[]});
+      storage.set('animals',animals);
+      document.getElementById('animalName').value=''; document.getElementById('animalAge').value='';
+      renderAnimals();
+    });
+
+    document.getElementById('animalsList').addEventListener('click', e=>{
+      const btn = e.target.closest('button'); if(!btn) return;
+      const idx = Number(btn.dataset.idx);
+      const action = btn.dataset.action;
+      const animals = storage.get('animals',[]);
+      if(action==='remove'){ if(confirm('Supprimer cet animal ?')){ animals.splice(idx,1); storage.set('animals',animals); renderAnimals(); } }
+      if(action==='view'){ const a = animals[idx]; alert(`Animal: ${a.name}\nType: ${a.type}\nÂge: ${a.age} mois\nNotes: ${a.notes.length}`) }
+    });
+
+    document.getElementById('saveDaily').addEventListener('click', ()=>{
+      const idx = Number(document.getElementById('selectAnimal').value);
+      const note = document.getElementById('dailyNote').value.trim();
+      if(isNaN(idx)){alert('Sélectionnez un animal');return}
+      if(!note){alert('Ajoutez une note');return}
+      const animals = storage.get('animals',[]);
+      animals[idx].notes.push({date:new Date().toISOString(),note});
+      storage.set('animals',animals); document.getElementById('dailyNote').value=''; renderAnimals();
+      alert('Note enregistrée');
+    });
+
+    // ====== CULTURE LOGIC ======
+    // --- Capteur du sol: humidité, seuil, historique ---
+    function simulateSoilReading(){
+      // renvoie une humidité simulée entre 10 et 90%
+      return Math.round(10 + Math.random()*80);
+    }
+
+    function renderSoilHistory(){
+      const hist = storage.get('soilHistory',[]);
+      const el = document.getElementById('soilHistory'); if(!el) return;
+      el.innerHTML = '';
+      if(hist.length===0){ el.innerHTML = '<div class="muted">Aucun historique.</div>'; return }
+      hist.forEach(h=>{
+        const it = document.createElement('div'); it.className='item';
+        const d = new Date(h.date).toLocaleString();
+        it.innerHTML = `<div><strong>${h.humidity}%</strong><div class='muted'>${d}</div></div>`;
+        el.appendChild(it);
+      })
+    }
+
+    function readSoilSensor(){
+      const h = simulateSoilReading();
+      const badge = document.getElementById('soilHumidity'); if(badge) badge.textContent = h + '%';
+      const hist = storage.get('soilHistory',[]);
+      hist.unshift({date:new Date().toISOString(),humidity:h});
+      // keep max 50 entries
+      storage.set('soilHistory', hist.slice(0,50));
+      renderSoilHistory();
+      const th = Number(storage.get('soilThreshold', 30));
+      if(!isNaN(th) && h < th){ alert('Alerte: sol sec — humidité '+h+'% (seuil '+th+'%)'); }
+    }
+
+    document.getElementById('readSoil')?.addEventListener('click', readSoilSensor);
+    document.getElementById('setSoilThreshold')?.addEventListener('click', ()=>{
+      const v = Number(document.getElementById('soilThreshold').value);
+      if(isNaN(v)){ alert('Entrez un seuil valide'); return }
+      storage.set('soilThreshold', v);
+      alert('Seuil de sol réglé à '+v+'%');
+    });
+    document.getElementById('clearSoilHistory')?.addEventListener('click', ()=>{
+      if(!confirm('Effacer l\'historique d\'humidité ?')) return;
+      storage.set('soilHistory', []);
+      renderSoilHistory();
+    });
+
+    // --- Alerte climatique simulée: température, risque pluie, conseil ---
+    function simulateClimate(){
+      const temp = Math.round(18 + Math.random()*20); // 18-38°C
+      const rainProb = Math.random();
+      let advice = 'Aucune action particulière.';
+      if(rainProb > 0.7) advice = 'Forte probabilité de pluie — retarder les semis et protéger les semences.';
+      else if(temp > 35) advice = 'Chaleur élevée — arroser tôt le matin et protéger jeunes plants.';
+      else if(temp < 18) advice = 'Basses températures — attention aux gelées nocturnes.';
+      return {temp, rainProb, advice};
+    }
+
+    function updateClimateUI(){
+      const c = simulateClimate();
+      const tEl = document.getElementById('climateTemp'); if(tEl) tEl.textContent = c.temp + ' °C';
+      const rEl = document.getElementById('climateRain'); if(rEl) rEl.textContent = Math.round(c.rainProb*100)+'%';
+      const aEl = document.getElementById('climateAdvice'); if(aEl) aEl.textContent = c.advice;
+      // simple notification when rainProb high
+      if(c.rainProb > 0.8){ alert('Alerte météo: forte probabilité de pluie — '+c.advice); }
+    }
+    document.getElementById('refreshClimate')?.addEventListener('click', updateClimateUI);
+
+    // init soil & climate displays
+    (function initSoilClimate(){
+      // load threshold into input
+      const th = storage.get('soilThreshold', null);
+      if(th !== null) document.getElementById('soilThreshold').value = th;
+      renderSoilHistory();
+      // initial simulated readings
+      try{ readSoilSensor(); }catch(e){}
+      updateClimateUI();
+    })();
+    function renderFields(){
+      const fields = storage.get('fields',[]);
+      const list = document.getElementById('fieldsList'); list.innerHTML='';
+      const select = document.getElementById('selectField'); select.innerHTML='';
+      if(fields.length===0){ list.innerHTML='<div class="muted">Aucun champ enregistré.</div>'; return }
+      fields.forEach((f,idx)=>{
+        const it = document.createElement('div'); it.className='item';
+        it.innerHTML = `<div><strong>${f.name}</strong><div class='muted'>${f.crop} — ${f.area} m² — actions: ${f.actions.length}</div></div>
+                        <div style="display:flex;gap:6px"><button class='btn ghost' data-idx='${idx}' data-action='viewField'>Voir</button><button class='btn' data-idx='${idx}' data-action='removeField'>Suppr</button></div>`;
+        list.appendChild(it);
+        const opt = document.createElement('option'); opt.value=idx; opt.text = `${f.name} (${f.crop})`; select.appendChild(opt);
+      })
+    }
+
+    document.getElementById('addField').addEventListener('click', ()=>{
+      const name = document.getElementById('fieldName').value.trim();
+      const crop = document.getElementById('cropType').value;
+      const area = Number(document.getElementById('fieldArea').value) || 0;
+      if(!name){alert('Nom du champ requis');return}
+      const fields = storage.get('fields',[]);
+      fields.push({name,crop,area,actions:[]}); storage.set('fields',fields); document.getElementById('fieldName').value=''; document.getElementById('fieldArea').value=''; renderFields();
+    });
+
+    document.getElementById('fieldsList').addEventListener('click', e=>{
+      const btn = e.target.closest('button'); if(!btn) return; const idx = Number(btn.dataset.idx); const action = btn.dataset.action; const fields = storage.get('fields',[]);
+      if(action==='removeField'){ if(confirm('Supprimer ce champ ?')){ fields.splice(idx,1); storage.set('fields',fields); renderFields(); } }
+      if(action==='viewField'){ const f = fields[idx]; alert(`Champ: ${f.name}\nProduit: ${f.crop}\nSuperficie: ${f.area} m²\nActions: ${f.actions.length}`) }
+    });
+
+    document.getElementById('saveFieldAction').addEventListener('click', ()=>{
+      const idx = Number(document.getElementById('selectField').value);
+      const action = document.getElementById('fieldAction').value.trim();
+      if(isNaN(idx)){alert('Sélectionnez un champ');return}
+      if(!action){alert('Décrivez l\'action');return}
+      const fields = storage.get('fields',[]);
+      fields[idx].actions.push({date:new Date().toISOString(),action}); storage.set('fields',fields); document.getElementById('fieldAction').value=''; renderFields(); alert('Action enregistrée');
+    });
+
+    // ====== MARCHE LOGIC ======
+    function renderMarket(filter=''){
+      const offers = storage.get('market',[
+        {title:'Poulets fermiers 1kg',price:800,owner:'Moussa',contact:'+223 6xxxxxxx'},
+        {title:'Maïs sec 50kg',price:12000,owner:'Fatou',contact:'+223 6xxxxxxx'},
+        {title:'Engrais NPK 50kg',price:25000,owner:'AgriShop',contact:'+223 7xxxxxxx'}
+      ]);
+      storage.set('market',offers); // ensure default
+      const list = document.getElementById('marketList'); list.innerHTML='';
+      const q = filter.toLowerCase();
+      offers.filter(o=> o.title.toLowerCase().includes(q) || o.owner.toLowerCase().includes(q)).forEach((o,idx)=>{
+        const it = document.createElement('div'); it.className='item';
+        it.innerHTML = `<div><strong>${o.title}</strong><div class='muted'>Prix: ${o.price} FCFA — Vendeur: ${o.owner}</div></div>
+                        <div style="display:flex;gap:6px"><button class='btn ghost' data-idx='${idx}' data-action='contact'>Contacter</button><button class='btn' data-idx='${idx}' data-action='buy'>Acheter</button></div>`;
+        list.appendChild(it);
+      })
+    }
+    document.getElementById('marketSearch').addEventListener('input', e=> renderMarket(e.target.value));
+
+    document.getElementById('marketList').addEventListener('click', e=>{
+      const btn = e.target.closest('button'); if(!btn) return; const idx = Number(btn.dataset.idx); const action = btn.dataset.action; const offers = storage.get('market',[]);
+      if(action==='contact'){ const o = offers[idx]; alert(`Appeler ${o.owner}: ${o.contact}`) }
+      if(action==='buy'){ const o = offers[idx]; if(confirm(`Acheter ${o.title} pour ${o.price} FCFA ?`)){ alert('Commande simulée — contactez le vendeur pour finaliser.'); } }
+    });
+
+    document.getElementById('newOfferBtn').addEventListener('click', ()=>{
+      const title = prompt('Titre de l\'offre (Ex: Tomates 10kg)'); if(!title) return; const price = prompt('Prix en FCFA'); if(!price) return; const owner = prompt('Votre nom');
+      const offers = storage.get('market',[]); offers.unshift({title,price: Number(price),owner:owner||'Anonyme',contact:'+'}); storage.set('market',offers); renderMarket();
+    });
+
+    // ====== CONSEILS ======
+    function renderArticles(){
+      const articles = storage.get('articles',[
+        {title:'Comment protéger vos poulets de la chaleur',excerpt:'Techniques simples pour réduire le stress thermique...'},
+        {title:'Rotation des cultures pour améliorer le sol',excerpt:'Pourquoi et comment alterner vos cultures chaque saison.'},
+        {title:'Vaccins essentiels pour dindons',excerpt:'Calendrier recommandé de vaccinations.'}
+      ]);
+      storage.set('articles',articles);
+      const list = document.getElementById('articlesList'); list.innerHTML='';
+      articles.forEach((a,idx)=>{
+        const it = document.createElement('div'); it.className='item'; it.innerHTML = `<div><strong>${a.title}</strong><div class='muted'>${a.excerpt}</div></div><div><button class='btn' data-idx='${idx}' data-action='read'>Lire</button></div>`; list.appendChild(it);
+      })
+    }
+
+    document.getElementById('articlesList').addEventListener('click', e=>{
+      const btn = e.target.closest('button'); if(!btn) return; const idx = Number(btn.dataset.idx); const articles = storage.get('articles',[]);
+      const a = articles[idx]; alert(`${a.title}\n\n${a.excerpt}\n\n[Contenu complet à créer]`);
+    });
+
+    // ====== VETO LOGIC ======
+    function renderVets(){
+      const vets = storage.get('vets',[
+        {name:'Dr. Coulibaly',region:'Bamako',phone:'+223 6xxxxxxx'},
+        {name:'Dr. Traoré',region:'Sikasso',phone:'+223 7xxxxxxx'}
+      ]);
+      storage.set('vets',vets);
+      const list = document.getElementById('vetsList'); list.innerHTML=''; const sel = document.getElementById('selectVet'); sel.innerHTML='';
+      vets.forEach((v,idx)=>{ const it = document.createElement('div'); it.className='item'; it.innerHTML = `<div><strong>${v.name}</strong><div class='muted'>${v.region} — ${v.phone}</div></div><div><button class='btn' data-idx='${idx}' data-action='call'>Appeler</button></div>`; list.appendChild(it); const opt = document.createElement('option'); opt.value=idx; opt.text = `${v.name} (${v.region})`; sel.appendChild(opt); })
+    }
+
+    document.getElementById('vetsList').addEventListener('click', e=>{ const btn = e.target.closest('button'); if(!btn) return; const idx = Number(btn.dataset.idx); const vets = storage.get('vets',[]); const v = vets[idx]; alert(`Appeler ${v.name}: ${v.phone}`); });
+
+    document.getElementById('sendVetMsg').addEventListener('click', ()=>{
+      const idx = Number(document.getElementById('selectVet').value); const msg = document.getElementById('vetMessage').value.trim(); if(isNaN(idx) || !msg){alert('Sélectionner un vétérinaire et écrire un message');return}
+      // For prototype simulate send
+      alert('Message envoyé au vétérinaire — réponse simulée: consultez les recommandations de base.'); document.getElementById('vetMessage').value='';
+    });
+
+    // ====== PROFILE ======
+    function loadProfile(){ const p = storage.get('profile',{name:'',location:'',phone:''}); document.getElementById('profileName').value=p.name; document.getElementById('profileLocation').value=p.location; document.getElementById('profilePhone').value=p.phone }
+    document.getElementById('saveProfile').addEventListener('click', ()=>{ const p={name:document.getElementById('profileName').value,location:document.getElementById('profileLocation').value,phone:document.getElementById('profilePhone').value}; storage.set('profile',p); alert('Profil sauvegardé'); });
+
+    // ====== Init render ======
+    renderAnimals(); renderFields(); renderMarket(); renderArticles(); renderVets(); loadProfile();
+
+    // Friendly tip: save before closing (simulated)
+    window.addEventListener('beforeunload', ()=>{ /* data already in localStorage */ });
+
+    // Small UX: deep linking via hash
+    function checkHash(){ const id = location.hash.replace('#',''); if(id) showView(id); }
+    window.addEventListener('hashchange', checkHash); checkHash();
+
+  </script>
+</body>
+</html>
