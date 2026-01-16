@@ -4,82 +4,98 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AgriFasoko — Prototype</title>
-  <style>
-    /* ====== Reset & Base ====== */
-    *{box-sizing:border-box;margin:0;padding:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
-    html,body,#app{height:100%}
-    body{background:#f6f8fb;color:#0f172a;line-height:1.4}
-
-    /* ====== App Shell ====== */
-    .app{max-width:900px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
-    header{background:linear-gradient(90deg,#0ea5a4, #38bdf8);color:white;padding:14px 16px;border-bottom-left-radius:18px;border-bottom-right-radius:18px}
-    .brand{display:flex;gap:12px;align-items:center}
-    .logo{width:48px;height:48px;border-radius:10px;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-weight:700}
-    .brand h1{font-size:18px}
-    .brand p{font-size:12px;opacity:0.95}
-
-    main{padding:12px;flex:1;display:flex;flex-direction:column;gap:12px}
-
-    /* ====== Home grid ====== */
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-    .card{background:white;padding:12px;border-radius:12px;box-shadow:0 6px 18px rgba(12,17,43,0.06);display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;border:1px solid rgba(15,23,42,0.04)}
-    .card button{background:transparent;border:0;font-weight:600;color:#0f172a}
-    .card .icon{width:44px;height:44px;border-radius:8px;background:#eef2ff;display:flex;align-items:center;justify-content:center;font-size:18px}
-
-    /* ====== Views ====== */
-    .view{display:none;flex-direction:column;gap:12px}
-    .view.active{display:flex}
-
-    .list{display:flex;flex-direction:column;gap:8px}
-    .item{background:white;padding:10px;border-radius:10px;border:1px solid rgba(15,23,42,0.04);display:flex;justify-content:space-between;align-items:center}
-
-    /* ====== Forms ====== */
-    label{font-size:13px;margin-bottom:6px;display:block}
-    input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef6;background:#fff}
-    .row{display:flex;gap:8px}
-    .row .col{flex:1}
-    .btn{display:inline-block;padding:10px 12px;border-radius:10px;border:0;background:#0ea5a4;color:white;font-weight:700}
-    .btn.ghost{background:transparent;color:#0f172a;border:1px solid rgba(15,23,42,0.06)}
-
-    /* ====== Bottom nav ====== */
-    nav.bottom{position:fixed;left:0;right:0;bottom:12px;display:flex;justify-content:center}
-    .bn{background:white;padding:8px;border-radius:14px;box-shadow:0 6px 20px rgba(2,6,23,0.08);display:flex;gap:6px}
-    .bn button{background:transparent;border:0;padding:8px 12px;border-radius:10px;font-weight:600}
-    .bn button.active{background:linear-gradient(90deg,#34d399,#10b981);color:white}
-
-    /* ====== Responsive tweaks ====== */
-    @media (max-width:640px){.grid{grid-template-columns:repeat(3,1fr)}header{padding:12px}.brand h1{font-size:16px}}
-
-    /* ====== Small helpers ====== */
-    .muted{color:#475569;font-size:13px}
-    .badge{background:#eef2ff;padding:6px 8px;border-radius:999px;font-size:12px}
-    .search{display:flex;gap:8px}
-    .search input{flex:1}
-  </style>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
   <div class="app" id="app">
     <header>
-      <div class="brand">
-        <div class="logo">AF</div>
-        <div>
-          <h1>AgriFasoko</h1>
-          <p>Application d’assistance pour cultivateurs et éleveurs — Mali</p>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="brand">
+          <div class="logo">AF</div>
+          <div>
+            <h1>AgriFasoko</h1>
+            <p data-i18n="app_desc" style="font-size:12px;opacity:0.9">Application d’assistance...</p>
+          </div>
         </div>
+        <button class="bell-btn" id="btnInbox" style="margin-right:8px">
+          <i class="fa-solid fa-envelope"></i> <span class="bell-badge" id="msgBadge" style="display:none">0</span>
+        </button>
+        <button class="bell-btn" id="btnNotifications">
+          <i class="fa-solid fa-bell"></i> <span class="bell-badge" id="notifBadge" style="display:none">0</span>
+        </button>
       </div>
     </header>
 
     <main>
-      <!-- HOME -->
-      <section id="home" class="view active">
-        <div class="grid">
-          <div class="card"><div class="icon">🐔</div><button data-nav="elevage">Élevage</button><div class="muted">Gérer animaux</div></div>
-          <div class="card"><div class="icon">🌾</div><button data-nav="culture">Culture</button><div class="muted">Gérer champs</div></div>
-          <div class="card"><div class="icon">🛒</div><button data-nav="marche">Marché</button><div class="muted">Acheter / Vendre</div></div>
+      <!-- AUTH -->
+      <section id="auth" class="view">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center">
+          <div class="logo" style="width:80px;height:80px;font-size:32px;margin-bottom:24px">AF</div>
+          <h2 style="margin-bottom:8px">Bienvenue sur AgriFasoko</h2>
+          <p class="muted" style="margin-bottom:32px">Connectez-vous pour continuer</p>
 
-          <div class="card"><div class="icon">📚</div><button data-nav="conseils">Conseils</button><div class="muted">Articles & vidéos</div></div>
-          <div class="card"><div class="icon">💉</div><button data-nav="veto">Vétérinaire</button><div class="muted">Contact & consult</div></div>
-          <div class="card"><div class="icon">👤</div><button data-nav="profil">Profil</button><div class="muted">Vos données</div></div>
+          <div id="loginForm" style="width:100%;max-width:350px">
+            <input id="loginPhone" type="tel" placeholder="Numéro de téléphone" style="margin-bottom:12px" />
+            <input id="loginPass" type="password" placeholder="Mot de passe" style="margin-bottom:24px" />
+            <button class="btn" id="btnLogin" style="width:100%;margin-bottom:16px">Se connecter</button>
+            <div style="font-size:14px">Pas encore de compte ? <a href="#" id="showSignup" style="color:var(--primary)">Créer un compte</a></div>
+          </div>
+
+          <div id="signupForm" style="width:100%;max-width:350px;display:none">
+            <input id="signupName" placeholder="Nom complet" style="margin-bottom:12px" />
+            <input id="signupPhone" type="tel" placeholder="Numéro de téléphone" style="margin-bottom:12px" />
+            <input id="signupLocation" placeholder="Localisation (ex: Ségou)" style="margin-bottom:12px" />
+            <select id="signupType" style="margin-bottom:12px">
+              <option value="Cultivateur">Cultivateur</option>
+              <option value="Éleveur">Éleveur</option>
+              <option value="Commerçant">Commerçant</option>
+            </select>
+            <input id="signupPass" type="password" placeholder="Mot de passe" style="margin-bottom:24px" />
+            <button class="btn" id="btnSignup" style="width:100%;margin-bottom:16px">S'inscrire</button>
+            <div style="font-size:14px">Déjà un compte ? <a href="#" id="showLogin" style="color:var(--primary)">Se connecter</a></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- NOTIFICATIONS -->
+      <section id="notifications" class="view">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h2 data-i18n="notif_title">Notifications</h2>
+          <div><button class="btn ghost" id="backFromNotif" data-i18n="btn_return">Retour</button></div>
+        </div>
+        <div id="notifList" style="margin-top:16px"></div>
+      </section>
+
+      <!-- INBOX -->
+      <section id="inbox" class="view">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h2 data-i18n="inbox_title">Messagerie</h2>
+          <div><button class="btn ghost" id="backFromInbox" data-i18n="btn_return">Retour</button></div>
+        </div>
+        <div id="inboxList" class="chat-list" style="margin-top:16px"></div>
+      </section>
+
+      <!-- CHAT -->
+      <section id="chat" class="view" style="height:calc(100vh - 140px)">
+        <div style="display:flex;align-items:center;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+          <button class="btn ghost" id="backFromChat" style="padding:8px">←</button>
+          <div style="font-weight:bold;font-size:16px" id="chatTargetName">Utilisateur</div>
+        </div>
+        <div id="chatBubbles" class="chat-bubbles" style="margin-bottom:12px"></div>
+        <div class="chat-footer">
+          <input id="chatInput" placeholder="Votre message..." style="border:1px solid var(--border);border-radius:24px;padding:10px 16px" />
+          <button class="btn" id="btnSendChat" style="border-radius:50%;width:46px;height:46px;padding:0;display:flex;align-items:center;justify-content:center">➤</button>
+        </div>
+      </section>
+
+      <!-- HOME -->
+      <section id="home" class="view">
+        <div class="grid">
+          <div class="card"><div class="icon"><i class="fa-solid fa-shop"></i></div><button data-nav="marche" data-i18n="nav_market">Marché</button><div class="muted" data-i18n="home_market_sub">Acheter / Vendre</div></div>
+          <div class="card"><div class="icon"><i class="fa-solid fa-graduation-cap"></i></div><button data-nav="conseils" data-i18n="nav_tips">Conseils</button><div class="muted" data-i18n="home_tips_sub">Articles & vidéos</div></div>
+          <div class="card"><div class="icon"><i class="fa-solid fa-clapperboard"></i></div><button data-nav="videos" data-i18n="nav_videos">Vidéos</button><div class="muted" data-i18n="home_videos_sub">Divertissement</div></div>
+          <div class="card"><div class="icon"><i class="fa-solid fa-user"></i></div><button data-nav="profil" data-i18n="nav_profile">Profil</button><div class="muted" data-i18n="home_profile_sub">Vos données</div></div>
         </div>
 
         <section style="margin-top:12px">
@@ -87,190 +103,52 @@
             <div class="muted">Alertes météo</div>
             <div class="badge" id="weatherBadge">—</div>
           </div>
-          <div style="margin-top:8px;background:white;padding:12px;border-radius:10px;border:1px solid rgba(15,23,42,0.04)">
+          <div style="margin-top:8px;background:var(--surface);padding:12px;border-radius:10px;border:1px solid var(--border)">
             <div id="weatherText">Chargement des alertes...</div>
           </div>
         </section>
       </section>
 
-      <section id="elevage" class="view">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <h2>Élevage</h2>
-          <div><button class="btn ghost" id="backFromElevage">Retour</button></div>
-        </div>
-      
-        <div class="row">
-          <div class="col">
-            <h3>Rappels</h3>
-            <label>Rappel de vaccination</label>
-            <input id="vaccinationReminder" type="date" />
-            <label>Rappel d'achat d'aliment</label>
-            <input id="foodReminder" type="date" />
-            <label>Rappel de nettoyage</label>
-            <input id="cleaningReminder" type="date" />
-            <div style="margin-top:8px"><button class="btn" id="saveReminders">Enregistrer les rappels</button></div>
-          </div>
-      
-          <div class="col">
-            <h3>Alerte de nourriture</h3>
-            <label>Nombre de repas par jour</label>
-            <select id="feedingFrequency">
-              <option value="1">1 fois</option>
-              <option value="2">2 fois</option>
-              <option value="3">3 fois</option>
-              <option value="4">4 fois</option>
-            </select>
-            <label>Heures des repas</label>
-            <input id="feedingTimes" placeholder="Ex: 08:00, 12:00, 18:00" />
-            <div style="margin-top:8px"><button class="btn" id="saveFeedingAlerts">Enregistrer les alertes</button></div>
-          </div>
-        </div>
-      
-        <h3 style="margin-top:12px">Mes rappels</h3>
-        <div id="remindersList" class="list"></div>
-      </section>
-      
-      <script>
-        // ====== ÉLEVAGE LOGIC ======
-        function renderReminders() {
-          const reminders = storage.get('reminders', []);
-          const list = document.getElementById('remindersList');
-          list.innerHTML = '';
-          if (reminders.length === 0) {
-            list.innerHTML = '<div class="muted">Aucun rappel enregistré.</div>';
-            return;
-          }
-          reminders.forEach((r, idx) => {
-            const it = document.createElement('div');
-            it.className = 'item';
-            it.innerHTML = `<div><strong>${r.type}</strong><div class="muted">${r.date || r.times}</div></div>
-                            <div><button class="btn" data-idx="${idx}" data-action="removeReminder">Supprimer</button></div>`;
-            list.appendChild(it);
-          });
-        }
-      
-        document.getElementById('saveReminders').addEventListener('click', () => {
-          const vaccinationDate = document.getElementById('vaccinationReminder').value;
-          const foodDate = document.getElementById('foodReminder').value;
-          const cleaningDate = document.getElementById('cleaningReminder').value;
-      
-          const reminders = storage.get('reminders', []);
-          if (vaccinationDate) reminders.push({ type: 'Vaccination', date: vaccinationDate });
-          if (foodDate) reminders.push({ type: 'Achat d\'aliment', date: foodDate });
-          if (cleaningDate) reminders.push({ type: 'Nettoyage', date: cleaningDate });
-      
-          storage.set('reminders', reminders);
-          renderReminders();
-          alert('Rappels enregistrés');
-        });
-      
-        document.getElementById('saveFeedingAlerts').addEventListener('click', () => {
-          const frequency = document.getElementById('feedingFrequency').value;
-          const times = document.getElementById('feedingTimes').value;
-      
-          if (!times) {
-            alert('Veuillez entrer les heures des repas');
-            return;
-          }
-      
-          const reminders = storage.get('reminders', []);
-          reminders.push({ type: 'Nourriture', times: `${frequency} fois par jour à ${times}` });
-          storage.set('reminders', reminders);
-          renderReminders();
-          alert('Alertes de nourriture enregistrées');
-        });
-      
-        document.getElementById('remindersList').addEventListener('click', (e) => {
-          const btn = e.target.closest('button');
-          if (!btn) return;
-          const idx = Number(btn.dataset.idx);
-          const reminders = storage.get('reminders', []);
-          reminders.splice(idx, 1);
-          storage.set('reminders', reminders);
-          renderReminders();
-        });
-      
-        // Initial render
-        renderReminders();
-      </script>
-
-      <!-- CULTURE -->
-      <section id="culture" class="view">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <h2>Culture</h2>
-          <div><button class="btn ghost" id="backFromCulture">Retour</button></div>
-        </div>
-
-        <div class="row">
-          <div class="col">
-            <h3>1) Capteur du sol</h3>
-            <div style="display:flex;gap:8px;align-items:center">
-              <div style="flex:1">
-                <label>Humidité actuelle</label>
-                <div style="display:flex;align-items:center;gap:8px">
-                  <div id="soilHumidity" class="badge">—</div>
-                  <button class="btn ghost" id="readSoil">Lire capteur</button>
-                </div>
-              </div>
-            </div>
-            <label>Seuil d'alerte (%)</label>
-            <input id="soilThreshold" type="number" placeholder="Ex: 30" />
-            <div style="margin-top:8px;display:flex;gap:8px"><button class="btn" id="setSoilThreshold">Enregistrer seuil</button><button class="btn ghost" id="clearSoilHistory">Effacer historique</button></div>
-            <h4 style="margin-top:8px">Historique humidité</h4>
-            <div id="soilHistory" class="list" style="max-height:160px;overflow:auto"></div>
-
-            <hr style="margin:12px 0;border:none;border-top:1px solid rgba(15,23,42,0.04)" />
-
-            <h3>2) Alerte climatique</h3>
-            <div style="display:flex;gap:8px;align-items:center">
-              <div style="flex:1">
-                <label>Température</label>
-                <div id="climateTemp" class="muted">— °C</div>
-                <label style="margin-top:6px">Risque pluie</label>
-                <div id="climateRain" class="muted">—</div>
-                <div style="margin-top:6px"><strong>Conseil :</strong> <div id="climateAdvice" class="muted">—</div></div>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:6px">
-                <button class="btn" id="refreshClimate">Actualiser</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col">
-            <h3>3) Suivi (normal)</h3>
-            <label>Sélectionner champ</label>
-            <select id="selectField"></select>
-            <label>Action (semis/arrosage/traitement/récolte)</label>
-            <input id="fieldAction" placeholder="Ex: Arrosage fait" />
-            <div style="margin-top:8px"><button class="btn" id="saveFieldAction">Enregistrer</button></div>
-
-            <hr style="margin:12px 0;border:none;border-top:1px solid rgba(15,23,42,0.04)" />
-
-            <h3>Ajouter un champ</h3>
-            <label>Nom du champ</label>
-            <input id="fieldName" placeholder="Ex: Champ Sud" />
-            <label>Produit</label>
-            <select id="cropType"><option>Gombo</option><option>Riz</option><option>Maïs</option><option>Tomate</option><option>Mil</option></select>
-            <label>Superficie (m²)</label>
-            <input id="fieldArea" type="number" />
-            <div style="margin-top:8px"><button class="btn" id="addField">Ajouter</button></div>
-          </div>
-        </div>
-
-        <h3 style="margin-top:12px">4) Mes champs</h3>
-        <div id="fieldsList" class="list"></div>
-      </section>
-
       <!-- MARCHE -->
       <section id="marche" class="view">
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <h2>Marché Agricole</h2>
-          <div><button class="btn ghost" id="backFromMarche">Retour</button></div>
+          <h2 data-i18n="market_title">Marché Agricole</h2>
+          <div><button class="btn ghost" id="backFromMarche" data-i18n="btn_return">Retour</button></div>
         </div>
 
         <div class="search">
           <input id="marketSearch" placeholder="Rechercher produit ou vendeur" />
-          <button class="btn" id="newOfferBtn">Vendre</button>
+          <button class="btn" id="newOfferBtn" data-i18n="btn_sell">Vendre</button>
+        </div>
+
+        <!-- Formulaire d'ajout (caché par défaut) -->
+        <div id="offerForm" class="card-panel" style="display:none;margin-top:12px;background:var(--bg);border:1px dashed var(--primary)">
+          <h3 style="margin-bottom:12px;font-size:16px">Publier une annonce</h3>
+          <div class="row">
+            <div class="col"><input id="offerTitle" placeholder="Quoi ? (ex: Sac de Riz)" /></div>
+            <div class="col"><input id="offerPrice" type="number" placeholder="Prix (FCFA)" /></div>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <div class="col"><select id="offerCategory"><option>Céréales</option><option>Légumes</option><option>Fruits</option><option>Animaux</option><option>Intrants</option><option>Autre</option></select></div>
+            <div class="col"><input id="offerContact" placeholder="Tél contact" /></div>
+          </div>
+          <div class="row" style="margin-top:8px"><div class="col"><label>Photo du produit</label><input type="file" id="offerImage" accept="image/*" /></div></div>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button class="btn" id="submitOffer">Publier</button>
+            <button class="btn ghost" id="cancelOffer">Annuler</button>
+          </div>
+        </div>
+
+        <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
+          <label style="margin:0">Filtrer :</label>
+          <select id="marketCategoryFilter" style="padding:8px;flex:1">
+            <option value="">Tout voir</option>
+            <option value="Céréales">Céréales</option>
+            <option value="Légumes">Légumes</option>
+            <option value="Fruits">Fruits</option>
+            <option value="Animaux">Animaux</option>
+            <option value="Intrants">Intrants</option>
+          </select>
         </div>
 
         <div style="margin-top:8px">
@@ -282,348 +160,248 @@
       <!-- CONSEILS -->
       <section id="conseils" class="view">
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <h2>Conseils & Formation</h2>
-          <div><button class="btn ghost" id="backFromConseils">Retour</button></div>
+          <h2 data-i18n="tips_title">Conseils & Formation</h2>
+          <div style="display:flex;gap:8px">
+            <button class="btn" id="btnNewConseil" style="padding:8px 12px;font-size:13px">➕ Publier</button>
+            <button class="btn ghost" id="backFromConseils" data-i18n="btn_return">Retour</button>
+          </div>
         </div>
-        <div class="list" id="articlesList"></div>
+
+        <div class="search" style="margin-top:12px">
+          <input id="searchAllConseils" placeholder="Rechercher dans tous les conseils..." />
+        </div>
+        <div class="grid" id="allConseilsList" style="grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));margin-top:16px;display:none"></div>
+
+        <!-- Formulaire Ajout Conseil -->
+        <div id="conseilForm" class="card-panel" style="display:none;margin-top:12px;background:var(--bg);border:1px dashed var(--primary)">
+          <h3 style="margin-bottom:12px;font-size:16px">Partager une technique ou un conseil</h3>
+          <div class="row">
+            <div class="col"><label>Titre</label><input id="conseilTitle" placeholder="Ex: Comment lutter contre..." /></div>
+            <div class="col">
+              <label>Catégorie</label>
+              <select id="conseilType">
+                <option value="agri">Cultivateur 🌾</option>
+                <option value="elevage">Éleveur 🐔</option>
+              </select>
+            </div>
+          </div>
+          <div class="row" style="margin-top:12px">
+            <div class="col"><label>Résumé (court)</label><input id="conseilExcerpt" placeholder="Une phrase d'accroche..." /></div>
+          </div>
+          <div class="row" style="margin-top:12px">
+            <div class="col"><label>Contenu détaillé</label><textarea id="conseilContent" rows="5" placeholder="Expliquez les étapes..."></textarea></div>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button class="btn" id="submitConseil">Publier</button>
+            <button class="btn ghost" id="cancelConseil">Annuler</button>
+          </div>
+        </div>
+        
+        <div id="conseilsCategories" style="display:flex;flex-direction:column;gap:16px;margin-top:24px">
+          <div class="card" id="btnConseilAgri" style="flex-direction:row;padding:20px;gap:16px;cursor:pointer;text-align:left;align-items:center">
+            <div class="icon" style="background:#dcfce7;color:#16a34a;font-size:32px;width:60px;height:60px;flex-shrink:0"><i class="fa-solid fa-wheat-awn"></i></div>
+            <div>
+              <h3 style="font-size:18px;margin-bottom:4px;color:#15803d" data-i18n="tips_agri_title">Espace Cultivateur</h3>
+              <div class="muted" data-i18n="tips_agri_sub">Techniques, sols, semences...</div>
+            </div>
+          </div>
+
+          <div class="card" id="btnConseilElevage" style="flex-direction:row;padding:20px;gap:16px;cursor:pointer;text-align:left;align-items:center">
+            <div class="icon" style="background:#ffedd5;color:#ea580c;font-size:32px;width:60px;height:60px;flex-shrink:0"><i class="fa-solid fa-cow"></i></div>
+            <div>
+              <h3 style="font-size:18px;margin-bottom:4px;color:#c2410c" data-i18n="tips_elev_title">Espace Éleveur</h3>
+              <div class="muted" data-i18n="tips_elev_sub">Santé, nutrition, vaccins...</div>
+            </div>
+          </div>
+
+          <div class="card" id="btnConseilFormation" style="flex-direction:row;padding:20px;gap:16px;cursor:pointer;text-align:left;align-items:center">
+            <div class="icon" style="background:#dbeafe;color:#2563eb;font-size:32px;width:60px;height:60px;flex-shrink:0"><i class="fa-solid fa-user-graduate"></i></div>
+            <div>
+              <h3 style="font-size:18px;margin-bottom:4px;color:#1d4ed8" data-i18n="tips_form_title">Espace Formation</h3>
+              <div class="muted" data-i18n="tips_form_sub">Gestion, comptabilité, marketing...</div>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <!-- VETO -->
-      <section id="veto" class="view">
+      <!-- SUB-SECTION: AGRI -->
+      <section id="conseils-agri" class="view">
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <h2>Assistance Vétérinaire</h2>
-          <div><button class="btn ghost" id="backFromVeto">Retour</button></div>
+          <h2 style="color:#15803d;font-size:20px">Cultivateurs 🌾</h2>
+          <div><button class="btn ghost" id="backToConseilsFromAgri" data-i18n="btn_return">Retour</button></div>
         </div>
-        <div>
-          <h3>Vétérinaires disponibles</h3>
-          <div id="vetsList" class="list"></div>
+        <div class="search">
+          <input id="searchAgri" placeholder="Rechercher un conseil..." />
+          <select id="filterTypeAgri" style="width:auto;padding:8px">
+            <option value="all" data-i18n="filter_all">Tout</option>
+            <option value="video" data-i18n="filter_video">Vidéo</option>
+            <option value="article" data-i18n="filter_article">Article</option>
+          </select>
         </div>
-        <div style="margin-top:8px">
-          <h3>Demander une consultation</h3>
-          <label>Vétérinaire</label>
-          <select id="selectVet"></select>
-          <label>Sujet / Symptômes</label>
-          <textarea id="vetMessage" rows="3"></textarea>
-          <div style="margin-top:8px"><button class="btn" id="sendVetMsg">Envoyer</button></div>
+        <div class="grid" id="agriList" style="grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));margin-top:16px"></div>
+      </section>
+
+      <!-- SUB-SECTION: ELEVAGE -->
+      <section id="conseils-elevage" class="view">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h2 style="color:#c2410c;font-size:20px">Éleveurs 🐔</h2>
+          <div><button class="btn ghost" id="backToConseilsFromElevage" data-i18n="btn_return">Retour</button></div>
         </div>
+        <div class="search">
+          <input id="searchElevage" placeholder="Rechercher un conseil..." />
+          <select id="filterTypeElevage" style="width:auto;padding:8px">
+            <option value="all" data-i18n="filter_all">Tout</option>
+            <option value="video" data-i18n="filter_video">Vidéo</option>
+            <option value="article" data-i18n="filter_article">Article</option>
+          </select>
+        </div>
+        <div class="grid" id="elevageList" style="grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));margin-top:16px"></div>
+      </section>
+
+      <!-- SUB-SECTION: FORMATION -->
+      <section id="conseils-formation" class="view">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h2 style="color:#1d4ed8;font-size:20px">Formations 🎓</h2>
+          <div><button class="btn ghost" id="backToConseilsFromFormation" data-i18n="btn_return">Retour</button></div>
+        </div>
+        <div class="search">
+          <input id="searchFormation" placeholder="Rechercher une formation..." />
+          <select id="filterTypeFormation" style="width:auto;padding:8px">
+            <option value="all" data-i18n="filter_all">Tout</option>
+            <option value="video" data-i18n="filter_video">Vidéo</option>
+            <option value="article" data-i18n="filter_article">Article</option>
+          </select>
+        </div>
+        <div class="grid" id="formationList" style="grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));margin-top:16px"></div>
+      </section>
+
+      <!-- VIDEOS (TikTok Style) -->
+      <section id="videos" class="view">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h2 data-i18n="videos_title">Vidéos 🎬</h2>
+          <div style="display:flex;gap:8px">
+            <button class="btn" id="btnNewVideo" style="padding:8px 12px;font-size:13px">➕ Publier</button>
+            <button class="btn ghost" id="backFromVideos" data-i18n="btn_return">Retour</button>
+          </div>
+        </div>
+
+        <!-- Formulaire Ajout Vidéo -->
+        <div id="videoForm" class="card-panel" style="display:none;margin-top:12px;background:var(--bg);border:1px dashed var(--primary)">
+          <h3 style="margin-bottom:12px;font-size:16px">Publier une vidéo ou photo</h3>
+          <div class="row">
+            <div class="col"><label>Titre / Description</label><input id="videoTitle" placeholder="Ex: Ma belle récolte..." /></div>
+          </div>
+          <div class="row" style="margin-top:12px">
+            <div class="col"><label>Fichier (Vidéo ou Photo)</label><input type="file" id="videoFile" accept="video/*,image/*" /></div>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button class="btn" id="submitVideo">Publier</button>
+            <button class="btn ghost" id="cancelVideo">Annuler</button>
+          </div>
+        </div>
+        <div class="tiktok-feed" id="videoFeed"></div>
       </section>
 
       <!-- PROFIL -->
       <section id="profil" class="view">
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <h2>Profil</h2>
-          <div><button class="btn ghost" id="backFromProfil">Retour</button></div>
+          <h2 data-i18n="profile_title">Profil</h2>
+          <div><button class="btn ghost" id="backFromProfil" data-i18n="btn_return">Retour</button></div>
         </div>
-        <div style="display:flex;gap:8px;flex-direction:column">
-          <label>Nom</label>
-          <input id="profileName" placeholder="Votre nom" />
-          <label>Localisation (région / village)</label>
-          <input id="profileLocation" placeholder="Ex: Koulikoro" />
-          <label>Téléphone</label>
-          <input id="profilePhone" placeholder="+223 6x xx xx xx" />
-          <div style="margin-top:8px"><button class="btn" id="saveProfile">Sauvegarder</button></div>
+        
+        <div class="card-panel" style="text-align:center;margin-bottom:8px">
+          <div style="position:relative;width:90px;height:90px;margin:0 auto 12px">
+            <img id="profileImage" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid var(--surface);box-shadow:0 4px 10px rgba(0,0,0,0.1)" src="https://placehold.co/100x100/e2e8f0/64748b?text=Photo" />
+            <button id="changePhotoBtn" style="position:absolute;bottom:0;right:0;background:var(--primary);color:white;border:2px solid var(--surface);width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 5px rgba(0,0,0,0.2)"><i class="fa-solid fa-camera"></i></button>
+            <input type="file" id="profilePhotoInput" accept="image/*" style="display:none" />
+          </div>
+          <h3 id="displayProfileName">Utilisateur</h3>
+          <div class="muted" id="displayProfileRole">Membre</div>
+        </div>
+
+        <div class="card-panel">
+          <h3 style="margin-bottom:12px;font-size:16px">Mes Informations</h3>
+          <div class="row">
+            <div class="col"><label data-i18n="lbl_name">Nom complet</label><input id="profileName" placeholder="Votre nom" /></div>
+            <div class="col">
+              <label data-i18n="lbl_activity">Activité</label>
+              <select id="profileType"><option>Cultivateur</option><option>Éleveur</option><option>Commerçant</option><option>Autre</option></select>
+            </div>
+          </div>
+          <div class="row" style="margin-top:12px">
+            <div class="col"><label data-i18n="lbl_location">Localisation</label><input id="profileLocation" placeholder="Ex: Koulikoro" /></div>
+            <div class="col"><label data-i18n="lbl_phone">Téléphone</label><input id="profilePhone" placeholder="+223 ..." /></div>
+          </div>
+          <label style="margin-top:12px" data-i18n="lbl_bio">Bio / Description</label>
+          <textarea id="profileBio" rows="2" placeholder="Décrivez votre ferme..."></textarea>
+          <div style="margin-top:16px"><button class="btn" id="saveProfile" style="width:100%" data-i18n="btn_update">Mettre à jour</button></div>
+        </div>
+
+        <div class="card-panel" style="margin-top:16px">
+          <h3 style="margin-bottom:12px;font-size:16px">Statistiques & Activité</h3>
+          <div class="grid" style="grid-template-columns: repeat(2, 1fr); gap: 12px;">
+            <div style="background:var(--bg);padding:16px;border-radius:12px;text-align:center;border:1px solid var(--border)">
+              <div style="font-size:24px;font-weight:800;color:var(--primary)" id="statOffersCount">0</div>
+              <div class="muted" style="font-size:13px;margin-top:4px">Annonces</div>
+            </div>
+            <div style="background:var(--bg);padding:16px;border-radius:12px;text-align:center;border:1px solid var(--border)">
+              <div style="font-size:24px;font-weight:800;color:#ea580c" id="statLikesCount">0</div>
+              <div class="muted" style="font-size:13px;margin-top:4px">Favoris</div>
+            </div>
+            <div style="background:var(--bg);padding:16px;border-radius:12px;text-align:center;border:1px solid var(--border)">
+              <div style="font-size:24px;font-weight:800;color:#2563eb" id="statCommentsCount">0</div>
+              <div class="muted" style="font-size:13px;margin-top:4px">Commentaires</div>
+            </div>
+            <div style="background:var(--bg);padding:16px;border-radius:12px;text-align:center;border:1px solid var(--border)">
+              <div style="font-size:14px;font-weight:700;color:var(--text);margin-top:6px" id="statMemberSince">-</div>
+              <div class="muted" style="font-size:13px;margin-top:4px">Membre depuis</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-panel" style="margin-top:16px">
+          <h3 style="margin-bottom:12px;font-size:16px">Paramètres de l'application</h3>
+          <div class="row">
+            <div class="col"><label data-i18n="lbl_lang">Langue / Kan</label><select id="profileLang"><option value="fr">Français</option><option value="bm">Bambara</option><option value="en">English</option></select></div>
+            <div class="col"><label data-i18n="lbl_theme">Thème</label><select id="profileTheme"><option value="light">Clair ☀️</option><option value="dark">Sombre 🌙</option></select></div>
+          </div>
+        </div>
+
+        <div class="card-panel" style="margin-top:16px;text-align:center">
+          <h3 style="margin-bottom:12px;font-size:16px" data-i18n="share_title">Faire connaître l'app</h3>
+          <button class="btn" id="shareAppBtn" style="width:100%;background:#25D366;color:white;border:none">
+            <span style="margin-right:8px;font-size:18px"><i class="fa-brands fa-whatsapp"></i></span> <span data-i18n="btn_share">Partager sur WhatsApp</span>
+          </button>
+          <button class="btn ghost" id="btnLogout" style="width:100%;margin-top:16px;border-color:#ef4444;color:#ef4444">Se déconnecter</button>
         </div>
       </section>
 
     </main>
 
-    <nav class="botton">
+    <nav class="bottom">
       <div class="bn">
-        <button data-nav="marche">Marché</button>
-        <button data-nav="elevage">Élevage</button>
-        <button data-nav="conseils">Conseils</button>
-        <button data-nav="culture">Culture</button>
-        <button data-nav="profil">Profil</button>
+        <button data-nav="marche" data-i18n="nav_market">Marché</button>
+        <button data-nav="conseils" data-i18n="nav_tips">Conseils</button>
+        <button data-nav="videos" data-i18n="nav_videos">Vidéos</button>
+        <button data-nav="profil" data-i18n="nav_profile">Profil</button>
       </div>
     </nav>
+
+    <!-- Generic Modal -->
+    <div id="modal" class="modal-overlay">
+      <div class="modal-card">
+        <button class="close-modal" id="closeModal">&times;</button>
+        <div id="modalContent"></div>
+      </div>
+    </div>
+
+    <!-- Loader -->
+    <div id="loader" class="loader-overlay">
+      <div class="spinner"></div>
+    </div>
   </div>
 
-  <script>
-    // ====== Simple SPA navigation ======
-    const views = document.querySelectorAll('.view');
-    function showView(id){
-      views.forEach(v=>v.classList.remove('active'));
-      const el = document.getElementById(id);
-      if(el) el.classList.add('active');
-      // update bottom nav active
-      document.querySelectorAll('.bn button').forEach(b=>b.classList.toggle('active', b.dataset.nav===id));
-      }
 
-    // Home buttons
-    document.querySelectorAll('[data-nav]').forEach(btn=>{
-      btn.addEventListener('click', ()=> showView(btn.dataset.nav));
-    });
-
-    // Back buttons
-    ['backFromElevage','backFromCulture','backFromMarche','backFromConseils','backFromVeto','backFromProfil'].forEach(id=>{
-      const el = document.getElementById(id);
-      if(el) el.addEventListener('click', ()=> showView('home'));
-    });
-
-    // ====== LocalStorage helpers ======
-    const storage = {
-      get(key, def){ try{ return JSON.parse(localStorage.getItem(key)) ?? def }catch(e){return def} },
-      set(key,val){ localStorage.setItem(key, JSON.stringify(val)) }
-    }
-
-    // ====== Weather (simulated) ======
-    function updateWeather(){
-      // For prototype we simulate an alert based on random conditions
-      const conditions = [
-        {text:'Aucune alerte — temps stable', badge:'OK'},
-        {text:'Risque de forte chaleur — protéger le bétail', badge:'CHALEUR'},
-        {text:'Pluie importante prévue — retarder les semis', badge:'PLUIE'},
-        {text:'Vent fort — attacher les structures légères', badge:'VENT'}
-      ];
-      const pick = conditions[Math.floor(Math.random()*conditions.length)];
-      document.getElementById('weatherText').textContent = pick.text;
-      document.getElementById('weatherBadge').textContent = pick.badge;
-    }
-    updateWeather();
-
-    // ====== ELEVAGE LOGIC ======
-    function renderAnimals(){
-      const animals = storage.get('animals',[]);
-      const list = document.getElementById('animalsList'); list.innerHTML='';
-      const select = document.getElementById('selectAnimal'); select.innerHTML='';
-      if(animals.length===0){ list.innerHTML='<div class="muted">Aucun animal ajouté.</div>'; return }
-      animals.forEach((a,idx)=>{
-        const it = document.createElement('div'); it.className='item';
-        it.innerHTML = `<div><strong>${a.name}</strong> <div class="muted">${a.type} — ${a.age} mois</div></div>
-                        <div style="display:flex;gap:6px"><button class='btn ghost' data-idx='${idx}' data-action='view'>Détails</button><button class='btn' data-idx='${idx}' data-action='remove'>Suppr</button></div>`;
-        list.appendChild(it);
-        const opt = document.createElement('option'); opt.value=idx; opt.text = `${a.name} (${a.type})`; select.appendChild(opt);
-      })
-    }
-
-    document.getElementById('addAnimal').addEventListener('click', ()=>{
-      const type = document.getElementById('animalType').value;
-      const name = document.getElementById('animalName').value.trim();
-      const age = Number(document.getElementById('animalAge').value) || 0;
-      if(!name){alert('Donnez un nom ou identifiant');return}
-      const animals = storage.get('animals',[]);
-      animals.push({type,name,age,notes:[]});
-      storage.set('animals',animals);
-      document.getElementById('animalName').value=''; document.getElementById('animalAge').value='';
-      renderAnimals();
-    });
-
-    document.getElementById('animalsList').addEventListener('click', e=>{
-      const btn = e.target.closest('button'); if(!btn) return;
-      const idx = Number(btn.dataset.idx);
-      const action = btn.dataset.action;
-      const animals = storage.get('animals',[]);
-      if(action==='remove'){ if(confirm('Supprimer cet animal ?')){ animals.splice(idx,1); storage.set('animals',animals); renderAnimals(); } }
-      if(action==='view'){ const a = animals[idx]; alert(`Animal: ${a.name}\nType: ${a.type}\nÂge: ${a.age} mois\nNotes: ${a.notes.length}`) }
-    });
-
-    document.getElementById('saveDaily').addEventListener('click', ()=>{
-      const idx = Number(document.getElementById('selectAnimal').value);
-      const note = document.getElementById('dailyNote').value.trim();
-      if(isNaN(idx)){alert('Sélectionnez un animal');return}
-      if(!note){alert('Ajoutez une note');return}
-      const animals = storage.get('animals',[]);
-      animals[idx].notes.push({date:new Date().toISOString(),note});
-      storage.set('animals',animals); document.getElementById('dailyNote').value=''; renderAnimals();
-      alert('Note enregistrée');
-    });
-
-    // ====== CULTURE LOGIC ======
-    // --- Capteur du sol: humidité, seuil, historique ---
-    function simulateSoilReading(){
-      // renvoie une humidité simulée entre 10 et 90%
-      return Math.round(10 + Math.random()*80);
-    }
-
-    function renderSoilHistory(){
-      const hist = storage.get('soilHistory',[]);
-      const el = document.getElementById('soilHistory'); if(!el) return;
-      el.innerHTML = '';
-      if(hist.length===0){ el.innerHTML = '<div class="muted">Aucun historique.</div>'; return }
-      hist.forEach(h=>{
-        const it = document.createElement('div'); it.className='item';
-        const d = new Date(h.date).toLocaleString();
-        it.innerHTML = `<div><strong>${h.humidity}%</strong><div class='muted'>${d}</div></div>`;
-        el.appendChild(it);
-      })
-    }
-
-    function readSoilSensor(){
-      const h = simulateSoilReading();
-      const badge = document.getElementById('soilHumidity'); if(badge) badge.textContent = h + '%';
-      const hist = storage.get('soilHistory',[]);
-      hist.unshift({date:new Date().toISOString(),humidity:h});
-      // keep max 50 entries
-      storage.set('soilHistory', hist.slice(0,50));
-      renderSoilHistory();
-      const th = Number(storage.get('soilThreshold', 30));
-      if(!isNaN(th) && h < th){ alert('Alerte: sol sec — humidité '+h+'% (seuil '+th+'%)'); }
-    }
-
-    document.getElementById('readSoil')?.addEventListener('click', readSoilSensor);
-    document.getElementById('setSoilThreshold')?.addEventListener('click', ()=>{
-      const v = Number(document.getElementById('soilThreshold').value);
-      if(isNaN(v)){ alert('Entrez un seuil valide'); return }
-      storage.set('soilThreshold', v);
-      alert('Seuil de sol réglé à '+v+'%');
-    });
-    document.getElementById('clearSoilHistory')?.addEventListener('click', ()=>{
-      if(!confirm('Effacer l\'historique d\'humidité ?')) return;
-      storage.set('soilHistory', []);
-      renderSoilHistory();
-    });
-
-    // --- Alerte climatique simulée: température, risque pluie, conseil ---
-    function simulateClimate(){
-      const temp = Math.round(18 + Math.random()*20); // 18-38°C
-      const rainProb = Math.random();
-      let advice = 'Aucune action particulière.';
-      if(rainProb > 0.7) advice = 'Forte probabilité de pluie — retarder les semis et protéger les semences.';
-      else if(temp > 35) advice = 'Chaleur élevée — arroser tôt le matin et protéger jeunes plants.';
-      else if(temp < 18) advice = 'Basses températures — attention aux gelées nocturnes.';
-      return {temp, rainProb, advice};
-    }
-
-    function updateClimateUI(){
-      const c = simulateClimate();
-      const tEl = document.getElementById('climateTemp'); if(tEl) tEl.textContent = c.temp + ' °C';
-      const rEl = document.getElementById('climateRain'); if(rEl) rEl.textContent = Math.round(c.rainProb*100)+'%';
-      const aEl = document.getElementById('climateAdvice'); if(aEl) aEl.textContent = c.advice;
-      // simple notification when rainProb high
-      if(c.rainProb > 0.8){ alert('Alerte météo: forte probabilité de pluie — '+c.advice); }
-    }
-    document.getElementById('refreshClimate')?.addEventListener('click', updateClimateUI);
-
-    // init soil & climate displays
-    (function initSoilClimate(){
-      // load threshold into input
-      const th = storage.get('soilThreshold', null);
-      if(th !== null) document.getElementById('soilThreshold').value = th;
-      renderSoilHistory();
-      // initial simulated readings
-      try{ readSoilSensor(); }catch(e){}
-      updateClimateUI();
-    })();
-    function renderFields(){
-      const fields = storage.get('fields',[]);
-      const list = document.getElementById('fieldsList'); list.innerHTML='';
-      const select = document.getElementById('selectField'); select.innerHTML='';
-      if(fields.length===0){ list.innerHTML='<div class="muted">Aucun champ enregistré.</div>'; return }
-      fields.forEach((f,idx)=>{
-        const it = document.createElement('div'); it.className='item';
-        it.innerHTML = `<div><strong>${f.name}</strong><div class='muted'>${f.crop} — ${f.area} m² — actions: ${f.actions.length}</div></div>
-                        <div style="display:flex;gap:6px"><button class='btn ghost' data-idx='${idx}' data-action='viewField'>Voir</button><button class='btn' data-idx='${idx}' data-action='removeField'>Suppr</button></div>`;
-        list.appendChild(it);
-        const opt = document.createElement('option'); opt.value=idx; opt.text = `${f.name} (${f.crop})`; select.appendChild(opt);
-      })
-    }
-
-    document.getElementById('addField').addEventListener('click', ()=>{
-      const name = document.getElementById('fieldName').value.trim();
-      const crop = document.getElementById('cropType').value;
-      const area = Number(document.getElementById('fieldArea').value) || 0;
-      if(!name){alert('Nom du champ requis');return}
-      const fields = storage.get('fields',[]);
-      fields.push({name,crop,area,actions:[]}); storage.set('fields',fields); document.getElementById('fieldName').value=''; document.getElementById('fieldArea').value=''; renderFields();
-    });
-
-    document.getElementById('fieldsList').addEventListener('click', e=>{
-      const btn = e.target.closest('button'); if(!btn) return; const idx = Number(btn.dataset.idx); const action = btn.dataset.action; const fields = storage.get('fields',[]);
-      if(action==='removeField'){ if(confirm('Supprimer ce champ ?')){ fields.splice(idx,1); storage.set('fields',fields); renderFields(); } }
-      if(action==='viewField'){ const f = fields[idx]; alert(`Champ: ${f.name}\nProduit: ${f.crop}\nSuperficie: ${f.area} m²\nActions: ${f.actions.length}`) }
-    });
-
-    document.getElementById('saveFieldAction').addEventListener('click', ()=>{
-      const idx = Number(document.getElementById('selectField').value);
-      const action = document.getElementById('fieldAction').value.trim();
-      if(isNaN(idx)){alert('Sélectionnez un champ');return}
-      if(!action){alert('Décrivez l\'action');return}
-      const fields = storage.get('fields',[]);
-      fields[idx].actions.push({date:new Date().toISOString(),action}); storage.set('fields',fields); document.getElementById('fieldAction').value=''; renderFields(); alert('Action enregistrée');
-    });
-
-    // ====== MARCHE LOGIC ======
-    function renderMarket(filter=''){
-      const offers = storage.get('market',[
-        {title:'Poulets fermiers 1kg',price:800,owner:'Moussa',contact:'+223 6xxxxxxx'},
-        {title:'Maïs sec 50kg',price:12000,owner:'Fatou',contact:'+223 6xxxxxxx'},
-        {title:'Engrais NPK 50kg',price:25000,owner:'AgriShop',contact:'+223 7xxxxxxx'}
-      ]);
-      storage.set('market',offers); // ensure default
-      const list = document.getElementById('marketList'); list.innerHTML='';
-      const q = filter.toLowerCase();
-      offers.filter(o=> o.title.toLowerCase().includes(q) || o.owner.toLowerCase().includes(q)).forEach((o,idx)=>{
-        const it = document.createElement('div'); it.className='item';
-        it.innerHTML = `<div><strong>${o.title}</strong><div class='muted'>Prix: ${o.price} FCFA — Vendeur: ${o.owner}</div></div>
-                        <div style="display:flex;gap:6px"><button class='btn ghost' data-idx='${idx}' data-action='contact'>Contacter</button><button class='btn' data-idx='${idx}' data-action='buy'>Acheter</button></div>`;
-        list.appendChild(it);
-      })
-    }
-    document.getElementById('marketSearch').addEventListener('input', e=> renderMarket(e.target.value));
-
-    document.getElementById('marketList').addEventListener('click', e=>{
-      const btn = e.target.closest('button'); if(!btn) return; const idx = Number(btn.dataset.idx); const action = btn.dataset.action; const offers = storage.get('market',[]);
-      if(action==='contact'){ const o = offers[idx]; alert(`Appeler ${o.owner}: ${o.contact}`) }
-      if(action==='buy'){ const o = offers[idx]; if(confirm(`Acheter ${o.title} pour ${o.price} FCFA ?`)){ alert('Commande simulée — contactez le vendeur pour finaliser.'); } }
-    });
-
-    document.getElementById('newOfferBtn').addEventListener('click', ()=>{
-      const title = prompt('Titre de l\'offre (Ex: Tomates 10kg)'); if(!title) return; const price = prompt('Prix en FCFA'); if(!price) return; const owner = prompt('Votre nom');
-      const offers = storage.get('market',[]); offers.unshift({title,price: Number(price),owner:owner||'Anonyme',contact:'+'}); storage.set('market',offers); renderMarket();
-    });
-
-    // ====== CONSEILS ======
-    function renderArticles(){
-      const articles = storage.get('articles',[
-        {title:'Comment protéger vos poulets de la chaleur',excerpt:'Techniques simples pour réduire le stress thermique...'},
-        {title:'Rotation des cultures pour améliorer le sol',excerpt:'Pourquoi et comment alterner vos cultures chaque saison.'},
-        {title:'Vaccins essentiels pour dindons',excerpt:'Calendrier recommandé de vaccinations.'}
-      ]);
-      storage.set('articles',articles);
-      const list = document.getElementById('articlesList'); list.innerHTML='';
-      articles.forEach((a,idx)=>{
-        const it = document.createElement('div'); it.className='item'; it.innerHTML = `<div><strong>${a.title}</strong><div class='muted'>${a.excerpt}</div></div><div><button class='btn' data-idx='${idx}' data-action='read'>Lire</button></div>`; list.appendChild(it);
-      })
-    }
-
-    document.getElementById('articlesList').addEventListener('click', e=>{
-      const btn = e.target.closest('button'); if(!btn) return; const idx = Number(btn.dataset.idx); const articles = storage.get('articles',[]);
-      const a = articles[idx]; alert(`${a.title}\n\n${a.excerpt}\n\n[Contenu complet à créer]`);
-    });
-
-    // ====== VETO LOGIC ======
-    function renderVets(){
-      const vets = storage.get('vets',[
-        {name:'Dr. Coulibaly',region:'Bamako',phone:'+223 6xxxxxxx'},
-        {name:'Dr. Traoré',region:'Sikasso',phone:'+223 7xxxxxxx'}
-      ]);
-      storage.set('vets',vets);
-      const list = document.getElementById('vetsList'); list.innerHTML=''; const sel = document.getElementById('selectVet'); sel.innerHTML='';
-      vets.forEach((v,idx)=>{ const it = document.createElement('div'); it.className='item'; it.innerHTML = `<div><strong>${v.name}</strong><div class='muted'>${v.region} — ${v.phone}</div></div><div><button class='btn' data-idx='${idx}' data-action='call'>Appeler</button></div>`; list.appendChild(it); const opt = document.createElement('option'); opt.value=idx; opt.text = `${v.name} (${v.region})`; sel.appendChild(opt); })
-    }
-
-    document.getElementById('vetsList').addEventListener('click', e=>{ const btn = e.target.closest('button'); if(!btn) return; const idx = Number(btn.dataset.idx); const vets = storage.get('vets',[]); const v = vets[idx]; alert(`Appeler ${v.name}: ${v.phone}`); });
-
-    document.getElementById('sendVetMsg').addEventListener('click', ()=>{
-      const idx = Number(document.getElementById('selectVet').value); const msg = document.getElementById('vetMessage').value.trim(); if(isNaN(idx) || !msg){alert('Sélectionner un vétérinaire et écrire un message');return}
-      // For prototype simulate send
-      alert('Message envoyé au vétérinaire — réponse simulée: consultez les recommandations de base.'); document.getElementById('vetMessage').value='';
-    });
-
-    // ====== PROFILE ======
-    function loadProfile(){ const p = storage.get('profile',{name:'',location:'',phone:''}); document.getElementById('profileName').value=p.name; document.getElementById('profileLocation').value=p.location; document.getElementById('profilePhone').value=p.phone }
-    document.getElementById('saveProfile').addEventListener('click', ()=>{ const p={name:document.getElementById('profileName').value,location:document.getElementById('profileLocation').value,phone:document.getElementById('profilePhone').value}; storage.set('profile',p); alert('Profil sauvegardé'); });
-
-    // ====== Init render ======
-    renderAnimals(); renderFields(); renderMarket(); renderArticles(); renderVets(); loadProfile();
-
-    // Friendly tip: save before closing (simulated)
-    window.addEventListener('beforeunload', ()=>{ /* data already in localStorage */ });
-
-    // Small UX: deep linking via hash
-    function checkHash(){ const id = location.hash.replace('#',''); if(id) showView(id); }
-    window.addEventListener('hashchange', checkHash); checkHash();
-
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
